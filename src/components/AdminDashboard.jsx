@@ -1,128 +1,63 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { Outlet } from "react-router-dom";
+import Navbar from "./navbar/Navbar"; // Import Navbar
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
-  const auth = getAuth();
-
-  // Fungsi untuk menangani logout
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Redirect ke halaman login setelah logout berhasil
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Logout failed: ", error);
-      });
-  };
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Navbar (Sidebar) */}
-      <nav className="w-64 bg-blue-700 text-white p-6">
-        <h1 className="text-2xl font-bold mb-10">Admin Dashboard</h1>
-        <ul className="space-y-3">
-          <li>
-            <Link to="/dashboard" className="block px-4 py-2 hover:bg-blue-600 rounded">
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link to="/daftarBarang" className="block px-4 py-2 hover:bg-blue-600 rounded">
-              Daftar Barang
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/tambah-barang" className="block px-4 py-2 hover:bg-blue-600 rounded">
-              Tambah Barang
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/scan-qr" className="block px-4 py-2 hover:bg-blue-600 rounded">
-              Scan QR Barang
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/riwayat" className="block px-4 py-2 hover:bg-blue-600 rounded">
-              Riwayat Aksi
-            </Link>
-          </li>
-        </ul>
-        {/* Logout Button */}
-        <div className="mt-10">
-          <button onClick={handleLogout} className="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded">
-            Logout
-          </button>
-        </div>
-      </nav>
-
-      {/* Main content area (Dashboard Home) */}
+      <Navbar /> {/* Tambahkan Navbar di sini */}
       <div className="flex-1 p-6">
-        <h1 className="text-2xl font-semibold mb-6">Admin Dashboard</h1>
+        {/* Konten Halaman Dashboard */}
+        <h1 className="text-3xl font-bold mb-4">Dashboard Admin</h1>
 
-        {/* Statistik */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white shadow-md rounded-lg p-5">
-            <h3 className="text-xl font-semibold">Total Barang</h3>
-            <p className="text-4xl font-bold mt-3">120</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Kartu Statistik */}
+          <div className="bg-white p-4 shadow rounded-lg">
+            <h2 className="font-semibold text-lg">Total Barang</h2>
+            <p className="text-2xl">120</p>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-5">
-            <h3 className="text-xl font-semibold">Barang Baru</h3>
-            <p className="text-4xl font-bold mt-3">15</p>
+          <div className="bg-white p-4 shadow rounded-lg">
+            <h2 className="font-semibold text-lg">Barang Terjual</h2>
+            <p className="text-2xl">85</p>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-5">
-            <h3 className="text-xl font-semibold">Total Transaksi</h3>
-            <p className="text-4xl font-bold mt-3">350</p>
+          <div className="bg-white p-4 shadow rounded-lg">
+            <h2 className="font-semibold text-lg">Stok Tersisa</h2>
+            <p className="text-2xl">35</p>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-5">
-            <h3 className="text-xl font-semibold">Barang Tersedia</h3>
-            <p className="text-4xl font-bold mt-3">105</p>
-          </div>
-        </div>
-
-        {/* Grafik (Sementara Placeholder) */}
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h3 className="text-xl font-semibold mb-4">Grafik Penjualan (Placeholder)</h3>
-          <div className="h-40 bg-gray-100 flex items-center justify-center">
-            <p className="text-gray-500">Grafik Penjualan Akan Ditampilkan Disini</p>
+          {/* Grafik atau Chart */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 shadow rounded-lg">
+            <h2 className="font-semibold text-lg mb-2">Statistik Penjualan</h2>
+            <div className="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+              <p>Grafik Penjualan (Implementasikan Chart Library di sini)</p>
+            </div>
           </div>
         </div>
 
-        {/* Daftar Barang Terbaru */}
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h3 className="text-xl font-semibold mb-4">Barang Terbaru</h3>
-          <table className="min-w-full bg-white">
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold">Recent Activities</h2>
+          <table className="min-w-full bg-white shadow-md rounded-lg mt-2">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">Nama Barang</th>
-                <th className="py-2 px-4 border-b">Kategori</th>
-                <th className="py-2 px-4 border-b">Stok</th>
-                <th className="py-2 px-4 border-b">Tanggal Masuk</th>
+                <th className="py-2 px-4 border-b">Tanggal</th>
+                <th className="py-2 px-4 border-b">Aksi</th>
+                <th className="py-2 px-4 border-b">User</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="py-2 px-4 border-b">Kipas Angin</td>
-                <td className="py-2 px-4 border-b">Elektronik</td>
-                <td className="py-2 px-4 border-b">15</td>
                 <td className="py-2 px-4 border-b">2024-10-01</td>
+                <td className="py-2 px-4 border-b">Menambahkan Barang Baru</td>
+                <td className="py-2 px-4 border-b">Admin</td>
               </tr>
               <tr>
-                <td className="py-2 px-4 border-b">Lampu Philips</td>
-                <td className="py-2 px-4 border-b">Penerangan</td>
-                <td className="py-2 px-4 border-b">40</td>
-                <td className="py-2 px-4 border-b">2024-09-28</td>
+                <td className="py-2 px-4 border-b">2024-10-03</td>
+                <td className="py-2 px-4 border-b">Mengubah Stok Barang</td>
+                <td className="py-2 px-4 border-b">Admin</td>
               </tr>
-              <tr>
-                <td className="py-2 px-4 border-b">Kabel Listrik</td>
-                <td className="py-2 px-4 border-b">Kelistrikan</td>
-                <td className="py-2 px-4 border-b">30</td>
-                <td className="py-2 px-4 border-b">2024-09-25</td>
-              </tr>
+              {/* Tambahkan baris lain sesuai kebutuhan */}
             </tbody>
           </table>
         </div>
