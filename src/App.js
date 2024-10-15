@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Welcome from "./components/Welcome";
+import Login from "./components/Login";
+import ForgotPassword from "./components/ForgotPassword";
+import AdminDashboard from "./components/AdminDashboard"; // Import Admin Dashboard
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB1uYGPuFn1djSjAGimbNKs8n29yy1A3u0",
+  authDomain: "estockelektronik-76a37.firebaseapp.com",
+  projectId: "estockelektronik-76a37",
+  storageBucket: "estockelektronik-76a37.appspot.com",
+  messagingSenderId: "261932821159",
+  appId: "1:261932821159:web:66d14e1900e1d5231f4982",
+  measurementId: "G-0XDDG95CL6",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* <Route exact path="/" element={<Welcome />} /> */}
+        <Route exact path="/" element={<Login />} />
+        <Route exact path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<AdminDashboard />} /> {/* Route untuk halaman dashboard */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
