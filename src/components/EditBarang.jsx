@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./navbar/Navbar";
@@ -79,6 +79,12 @@ const EditBarang = () => {
         imageUrl,
         qrCodeUrl,
         updatedDate: new Date().toISOString(),
+      });
+
+      await addDoc(collection(db, "riwayatAksi"), {
+        tanggal: new Date().toISOString(),
+        aksi: "Edit Barang",
+        detail: `Barang dengan nama ${nama} berhasil diupdate.`,
       });
 
       alert("Barang berhasil diupdate!");

@@ -43,7 +43,7 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/dashboard/riwayat" className="block px-4 py-2 hover:bg-blue-600 rounded">
+          <Link to="/riwayat" className="block px-4 py-2 hover:bg-blue-600 rounded">
             Riwayat Aksi
           </Link>
         </li>

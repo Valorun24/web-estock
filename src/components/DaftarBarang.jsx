@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, deleteDoc, doc, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./navbar/Navbar";
 
@@ -28,6 +28,11 @@ const DaftarBarang = () => {
       try {
         await deleteDoc(doc(db, "barang", id));
         alert("Barang berhasil dihapus.");
+        await addDoc(collection(db, "riwayatAksi"), {
+          tanggal: new Date().toISOString(),
+          aksi: "Hapus Barang",
+          detail: `Barang dengan ID ${id} berhasil dihapus.`,
+        });
         setBarangList((prevList) => prevList.filter((barang) => barang.id !== id));
       } catch (error) {
         console.error("Error deleting barang: ", error);

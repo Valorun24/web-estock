@@ -56,6 +56,12 @@ const TambahBarang = () => {
         qrCodeUrl,
         addedDate: new Date().toISOString(),
       });
+
+      await addDoc(collection(db, "riwayatAksi"), {
+        tanggal: new Date().toISOString(),
+        aksi: "Tambah Barang",
+        detail: `Barang dengan nama ${nama} berhasil ditambahkan.`,
+      });
       alert("Barang berhasil ditambahkan!");
       navigate("/daftarBarang");
     } catch (error) {

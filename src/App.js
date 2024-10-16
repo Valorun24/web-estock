@@ -6,6 +6,7 @@ import AdminDashboard from "./components/AdminDashboard"; // Import Admin Dashbo
 import DaftarBarang from "./components/DaftarBarang"; // Import halaman DaftarBarang
 import TambahBarang from "./components/TambahBarang";
 import EditBarang from "./components/EditBarang";
+import RiwayatAksi from "./components/RiwayatAksi";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/daftarBarang" element={<DaftarBarang />} /> {/* Daftar Barang sebagai halaman default */}
         <Route path="tambahBarang" element={<TambahBarang />} />
         <Route path="/editBarang/:id" element={<EditBarang />} />
+        <Route path="/riwayat" element={<RiwayatAksi />} />
       </Routes>
     </BrowserRouter>
   );
