@@ -1,14 +1,16 @@
 // Navbar.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const auth = getAuth();
 
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
+        navigate("/");
         // Logout berhasil
       })
       .catch((error) => {
@@ -31,7 +33,7 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/dashboard/tambah-barang" className="block px-4 py-2 hover:bg-blue-600 rounded">
+          <Link to="/tambahBarang" className="block px-4 py-2 hover:bg-blue-600 rounded">
             Tambah Barang
           </Link>
         </li>
