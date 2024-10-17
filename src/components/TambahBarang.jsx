@@ -3,6 +3,7 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./navbar/Navbar";
+import QRCode from "qrcode"; // Pustaka untuk generate QR code
 
 const TambahBarang = () => {
   const [kodeBarang, setKodeBarang] = useState("");
@@ -11,7 +12,6 @@ const TambahBarang = () => {
   const [kategori, setKategoriBarang] = useState("");
   const [hargaBarang, setHargaBarang] = useState(0);
   const [gambar, setGambar] = useState(null); // Untuk menyimpan file gambar
-  const [qrCode, setQrCode] = useState(null); // Untuk menyimpan QR code
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -26,6 +26,17 @@ const TambahBarang = () => {
     return downloadURL;
   };
 
+  // Fungsi untuk membuat QR code berdasarkan kodeBarang
+  const generateQRCode = async (text) => {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(text);
+      return qrCodeDataURL;
+    } catch (err) {
+      console.error("Error generating QR code: ", err);
+      return null;
+    }
+  };
+
   const handleTambahBarang = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,8 +49,14 @@ const TambahBarang = () => {
         imageUrl = await uploadFile(gambar, "barang");
       }
 
-      if (qrCode) {
-        qrCodeUrl = await uploadFile(qrCode, "qrcode");
+      // Generate QR code otomatis berdasarkan kode barang
+      const qrCodeDataURL = await generateQRCode(kodeBarang);
+
+      if (qrCodeDataURL) {
+        // Simpan QR code ke Firebase Storage
+        const qrBlob = await (await fetch(qrCodeDataURL)).blob();
+        const qrFile = new File([qrBlob], `${kodeBarang}.png`, { type: "image/png" });
+        qrCodeUrl = await uploadFile(qrFile, "qrcode");
       }
 
       const hargaSatuan = parseInt(hargaBarang, 10);
@@ -53,7 +70,7 @@ const TambahBarang = () => {
         kategori,
         hargaSatuan,
         imageUrl,
-        qrCodeUrl,
+        qrCodeUrl, // URL dari QR code yang dihasilkan
         addedDate: new Date().toISOString(),
       });
 
@@ -62,6 +79,7 @@ const TambahBarang = () => {
         aksi: "Tambah Barang",
         detail: `Barang dengan nama ${nama} berhasil ditambahkan.`,
       });
+
       alert("Barang berhasil ditambahkan!");
       navigate("/daftarBarang");
     } catch (error) {
@@ -110,10 +128,6 @@ const TambahBarang = () => {
           <div>
             <label>Gambar Barang</label>
             <input type="file" onChange={(e) => setGambar(e.target.files[0])} className="w-full p-2 border" accept="image/*" required />
-          </div>
-          <div>
-            <label>QR Code Barang</label>
-            <input type="file" onChange={(e) => setQrCode(e.target.files[0])} className="w-full p-2 border" accept="image/*" required />
           </div>
           <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded" disabled={loading}>
             {loading ? "Menambahkan..." : "Tambah Barang"}

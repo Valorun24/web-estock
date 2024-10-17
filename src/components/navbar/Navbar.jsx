@@ -38,7 +38,7 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/dashboard/scan-qr" className="block px-4 py-2 hover:bg-blue-600 rounded">
+          <Link to="/scanqr" className="block px-4 py-2 hover:bg-blue-600 rounded">
             Scan QR Barang
           </Link>
         </li>

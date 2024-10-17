@@ -7,6 +7,8 @@ import DaftarBarang from "./components/DaftarBarang"; // Import halaman DaftarBa
 import TambahBarang from "./components/TambahBarang";
 import EditBarang from "./components/EditBarang";
 import RiwayatAksi from "./components/RiwayatAksi";
+import ScanQR from "./components/ScanQR";
+import DetailBarang from "./components/DetailBarang";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -41,6 +43,8 @@ function App() {
         <Route path="tambahBarang" element={<TambahBarang />} />
         <Route path="/editBarang/:id" element={<EditBarang />} />
         <Route path="/riwayat" element={<RiwayatAksi />} />
+        <Route path="/scanQR" element={<ScanQR />} />
+        <Route path="/barang/:kodeBarang" element={<DetailBarang />} />
       </Routes>
     </BrowserRouter>
   );
