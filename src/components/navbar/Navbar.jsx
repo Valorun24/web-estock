@@ -47,6 +47,11 @@ const Navbar = () => {
             Riwayat Aksi
           </Link>
         </li>
+        <li>
+          <Link to="/laporanBarang" className="block px-4 py-2 hover:bg-blue-600 rounded">
+            Laporan Barang
+          </Link>
+        </li>
       </ul>
 
       {/* Logout Button */}

@@ -15,13 +15,13 @@ const ScanQR = () => {
       setScanResult(data); // Simpan hasil scan QR Code
       try {
         // Cari barang berdasarkan kode QR (misal kodeBarang tersimpan dalam QR)
-        const docRef = doc(db, "barang", data);
+        const docRef = doc(db, "barang", data); // 'data' di sini dianggap sebagai ID dokumen dari Firestore
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const barangData = docSnap.data();
-          alert(`Barang Ditemukan: ${barangData.namaBarang}`);
-          navigate(`/detailBarang/${data}`);
+          alert(`Barang Ditemukan: ${barangData.nama}`);
+          navigate(`/detailBarang/${data}`); // Mengarahkan ke halaman detail barang dengan ID hasil scan
         } else {
           alert("Barang tidak ditemukan!");
         }
@@ -51,7 +51,7 @@ const ScanQR = () => {
         <QrReader
           onResult={(result, error) => {
             if (!!result) {
-              handleScan(result?.text);
+              handleScan(result?.text); // Mengambil teks dari QR code yang discan
             }
             if (!!error) {
               handleError(error);

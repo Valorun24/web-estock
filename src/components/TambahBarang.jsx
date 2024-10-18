@@ -60,13 +60,13 @@ const TambahBarang = () => {
       }
 
       const hargaSatuan = parseInt(hargaBarang, 10);
-      const stok = parseInt(1000);
+      const stokValue = parseInt(stok, 10);
 
       // Tambahkan data barang ke Firestore
       await addDoc(collection(db, "barang"), {
         kodeBarang,
         nama,
-        stok,
+        stok: stokValue,
         kategori,
         hargaSatuan,
         imageUrl,

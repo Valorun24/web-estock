@@ -1,75 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import Navbar from "./navbar/Navbar";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const DetailBarang = () => {
-  const { kodeBarang } = useParams(); // Kode barang yang dipindai akan diterima dari URL
+  const { id } = useParams(); // Mendapatkan ID dari URL
   const [barang, setBarang] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const db = getFirestore();
 
   useEffect(() => {
     const fetchBarang = async () => {
-      try {
-        // Query Firestore berdasarkan kode barang yang dipindai
-        const q = query(collection(db, "barang"), where("kodeBarang", "==", kodeBarang));
-        const querySnapshot = await getDocs(q);
+      const docRef = doc(db, "barang", id);
+      const docSnap = await getDoc(docRef);
 
-        if (!querySnapshot.empty) {
-          // Jika barang ditemukan, simpan datanya di state
-          querySnapshot.forEach((doc) => {
-            setBarang(doc.data());
-          });
-        } else {
-          alert("Barang tidak ditemukan.");
-        }
-      } catch (error) {
-        console.error("Error fetching barang: ", error);
-      } finally {
-        setLoading(false);
+      if (docSnap.exists()) {
+        setBarang(docSnap.data());
+      } else {
+        console.error("Barang tidak ditemukan!");
       }
     };
 
     fetchBarang();
-  }, [db, kodeBarang]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!barang) {
-    return <div>Barang tidak ditemukan</div>;
-  }
+  }, [id, db]);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Navbar />
-      <div className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-6">Detail Barang</h1>
-        <div className="space-y-4">
-          <div>
+    <div className="p-6">
+      {barang ? (
+        <div>
+          <h1 className="text-3xl font-bold mb-4">Detail Barang</h1>
+          <p>
             <strong>Kode Barang:</strong> {barang.kodeBarang}
-          </div>
-          <div>
-            <strong>Nama Barang:</strong> {barang.nama}
-          </div>
-          <div>
+          </p>
+          <p>
+            <strong>Nama Barang:</strong> {barang.namaBarang}
+          </p>
+          <p>
+            <strong>Stok:</strong> {barang.stok}
+          </p>
+          <p>
             <strong>Kategori:</strong> {barang.kategori}
-          </div>
-          <div>
-            <strong>Jumlah Stok:</strong> {barang.stok}
-          </div>
-          <div>
-            <strong>Harga:</strong> Rp {barang.hargaSatuan}
-          </div>
-          <div>
-            <strong>Gambar:</strong>
-            {barang.imageUrl ? <img src={barang.imageUrl} alt="Gambar Barang" className="w-32 h-32" /> : "Tidak ada gambar"}
-          </div>
+          </p>
+          <p>
+            <strong>Harga Satuan:</strong> {barang.hargaSatuan}
+          </p>
+          {barang.imageUrl && <img src={barang.imageUrl} alt="Gambar Barang" className="h-40" />}
+          {barang.qrCodeUrl && <img src={barang.qrCodeUrl} alt="QR Code" className="h-40 mt-4" />}
         </div>
-      </div>
+      ) : (
+        <p>Memuat data barang...</p>
+      )}
     </div>
   );
 };
