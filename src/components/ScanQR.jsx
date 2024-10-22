@@ -13,28 +13,34 @@ const ScanQR = () => {
   const handleScan = async (data) => {
     if (data) {
       setScanResult(data); // Simpan hasil scan QR Code
+      console.log("Hasil Scan:", data); // Log hasil scan
+
       try {
-        // Cari barang berdasarkan kode QR (misal kodeBarang tersimpan dalam QR)
-        const docRef = doc(db, "barang", data); // 'data' di sini dianggap sebagai ID dokumen dari Firestore
+        const docRef = doc(db, "barang", data); // Ambil dokumen berdasarkan ID dari QR
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const barangData = docSnap.data();
-          alert(`Barang Ditemukan: ${barangData.nama}`);
-          navigate(`/detailBarang/${data}`); // Mengarahkan ke halaman detail barang dengan ID hasil scan
+          console.log("Data Barang:", barangData);
+          alert(`Barang Ditemukan: ${barangData.namaBarang}`);
+          navigate(`/detailBarang/${data}`); // Mengarahkan ke halaman detail barang
         } else {
           alert("Barang tidak ditemukan!");
         }
       } catch (error) {
-        console.error("Error fetching barang: ", error);
-        setError("Gagal memindai QR Code.");
+        setError("Gagal memindai QR Code atau mengambil data.");
       }
     }
   };
 
   const handleError = (err) => {
-    console.error("Error while scanning QR code: ", err);
+    console.error("Error saat memindai QR Code: ", err);
     setError("Gagal mengakses kamera.");
+  };
+
+  const resetScan = () => {
+    setScanResult(null);
+    setError(null); // Reset error
   };
 
   return (
@@ -47,22 +53,27 @@ const ScanQR = () => {
           {scanResult ? <p className="text-green-500">Hasil Scan: {scanResult}</p> : <p className="text-gray-500">Arahkan kamera ke QR Code untuk memindai</p>}
         </div>
 
-        {/* Komponen untuk Scan QR */}
-        <QrReader
-          onResult={(result, error) => {
-            if (!!result) {
-              handleScan(result?.text); // Mengambil teks dari QR code yang discan
-            }
-            if (!!error) {
-              handleError(error);
-            }
-          }}
-          constraints={{ facingMode: "environment" }} // Menggunakan kamera belakang
-          containerStyle={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}
-        />
+        {!scanResult && (
+          <QrReader
+            onResult={(result, error) => {
+              if (!!result) {
+                handleScan(result?.text); // Mengambil teks dari QR code yang discan
+              }
+              if (!!error) {
+                handleError(error);
+              }
+            }}
+            constraints={{ facingMode: "environment" }} // Menggunakan kamera belakang
+            containerStyle={{
+              width: "100%",
+              maxWidth: "500px",
+              margin: "0 auto",
+            }}
+          />
+        )}
 
         {scanResult && (
-          <button onClick={() => setScanResult(null)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+          <button onClick={resetScan} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
             Scan Ulang
           </button>
         )}

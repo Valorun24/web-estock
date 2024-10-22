@@ -5,22 +5,39 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 const DetailBarang = () => {
   const { id } = useParams(); // Mendapatkan ID dari URL
   const [barang, setBarang] = useState(null);
+  const [loading, setLoading] = useState(true); // Menambah state loading
+  const [error, setError] = useState(null); // Menambah state error
   const db = getFirestore();
 
   useEffect(() => {
     const fetchBarang = async () => {
-      const docRef = doc(db, "barang", id);
-      const docSnap = await getDoc(docRef);
+      setLoading(true); // Set loading menjadi true saat fetch data dimulai
+      try {
+        const docRef = doc(db, "barang", id);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setBarang(docSnap.data());
-      } else {
-        console.error("Barang tidak ditemukan!");
+        if (docSnap.exists()) {
+          setBarang(docSnap.data());
+        } else {
+          setError("Barang tidak ditemukan!");
+        }
+      } catch (err) {
+        setError("Terjadi kesalahan saat mengambil data.");
+      } finally {
+        setLoading(false); // Setelah proses selesai, set loading menjadi false
       }
     };
 
     fetchBarang();
   }, [id, db]);
+
+  if (loading) {
+    return <p>Memuat data barang...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
 
   return (
     <div className="p-6">
@@ -46,7 +63,7 @@ const DetailBarang = () => {
           {barang.qrCodeUrl && <img src={barang.qrCodeUrl} alt="QR Code" className="h-40 mt-4" />}
         </div>
       ) : (
-        <p>Memuat data barang...</p>
+        <p>Barang tidak ditemukan!</p>
       )}
     </div>
   );
