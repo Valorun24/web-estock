@@ -12,35 +12,54 @@ const ScanQR = () => {
 
   const handleScan = async (data) => {
     if (data) {
-      setScanResult(data); // Simpan hasil scan QR Code
-      console.log("Hasil Scan:", data); // Log hasil scan
+      const cleanedData = data.trim();
+      setScanResult(cleanedData); // Simpan hasil scan QR Code
+      console.log("Hasil Scan:", cleanedData); // Log hasil scan
 
       try {
-        const docRef = doc(db, "barang", data); // Ambil dokumen berdasarkan ID dari QR
+        // Validasi bahwa hasil scan adalah ID yang valid
+        if (!cleanedData || cleanedData === "") {
+          alert("QR Code tidak valid!");
+          return;
+        }
+
+        // Ambil dokumen berdasarkan ID dari QR Code
+        const docRef = doc(db, "barang", cleanedData);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const barangData = docSnap.data();
-          console.log("Data Barang:", barangData);
-          alert(`Barang Ditemukan: ${barangData.namaBarang}`);
-          navigate(`/detailBarang/${data}`); // Mengarahkan ke halaman detail barang
+          console.log("Data Barang:", barangData); // Log data barang
+
+          // Periksa apakah nama barang ada
+          if (barangData?.kodeBarang) {
+            alert(`Barang Ditemukan: ${barangData.kodeBarang}`); // Menampilkan nama barang yang ditemukan
+
+            // Arahkan ke halaman detail barang
+            navigate(`/detailBarang/${cleanedData}`);
+          } else {
+            alert("Barang tidak ditemukan!");
+          }
+
+          setScanResult(null); // Reset hasil scan setelah diarahkan
         } else {
-          alert("Barang tidak ditemukan!");
+          alert("Barang tidak ditemukan!"); // Jika barang tidak ditemukan
         }
       } catch (error) {
-        setError("Gagal memindai QR Code atau mengambil data.");
+        console.error("Error fetching barang:", error); // Log jika ada error
+        setError("Terjadi kesalahan saat mengambil data dari server."); // Set error untuk UI
       }
     }
   };
 
   const handleError = (err) => {
-    console.error("Error saat memindai QR Code: ", err);
-    setError("Gagal mengakses kamera.");
+    console.error("Error saat memindai QR Code:", err); // Log error
+    setError("Gagal mengakses kamera."); // Set error untuk UI
   };
 
   const resetScan = () => {
-    setScanResult(null);
-    setError(null); // Reset error
+    setScanResult(null); // Reset hasil scan
+    setError(null); // Reset pesan error jika ada
   };
 
   return (
@@ -53,14 +72,15 @@ const ScanQR = () => {
           {scanResult ? <p className="text-green-500">Hasil Scan: {scanResult}</p> : <p className="text-gray-500">Arahkan kamera ke QR Code untuk memindai</p>}
         </div>
 
+        {/* Komponen untuk Scan QR */}
         {!scanResult && (
           <QrReader
             onResult={(result, error) => {
               if (!!result) {
-                handleScan(result?.text); // Mengambil teks dari QR code yang discan
+                handleScan(result?.text); // Memproses hasil QR scan
               }
               if (!!error) {
-                handleError(error);
+                handleError(error); // Menangani error dari kamera
               }
             }}
             constraints={{ facingMode: "environment" }} // Menggunakan kamera belakang
@@ -72,6 +92,7 @@ const ScanQR = () => {
           />
         )}
 
+        {/* Tombol Scan Ulang */}
         {scanResult && (
           <button onClick={resetScan} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
             Scan Ulang

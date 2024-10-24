@@ -48,7 +48,7 @@ const DetailBarang = () => {
             <strong>Kode Barang:</strong> {barang.kodeBarang}
           </p>
           <p>
-            <strong>Nama Barang:</strong> {barang.namaBarang}
+            <strong>Nama Barang:</strong> {barang.nama}
           </p>
           <p>
             <strong>Stok:</strong> {barang.stok}
