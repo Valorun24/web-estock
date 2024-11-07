@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import Navbar from "./navbar/Navbar";
 
 const LaporanBarang = () => {
   const [barangList, setBarangList] = useState([]);
@@ -51,6 +52,7 @@ const LaporanBarang = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
+      <Navbar />
       <div className="flex-1 p-6">
         <h1 className="text-3xl font-bold mb-6">Laporan Barang</h1>
 

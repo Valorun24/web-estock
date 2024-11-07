@@ -5,6 +5,7 @@ import Navbar from "./navbar/Navbar";
 
 const DaftarBarang = () => {
   const [barangList, setBarangList] = useState([]);
+  const [search, setSearch] = useState("");
   const db = getFirestore();
   const navigate = useNavigate();
 
@@ -51,14 +52,24 @@ const DaftarBarang = () => {
     navigate(`/editBarang/${id}`);
   };
 
+  // Filter barangList berdasarkan pencarian
+  const filteredBarangList = barangList.filter((barang) => barang.nama.toLowerCase().includes(search.toLowerCase()));
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Navbar />
       <div className="flex-1 p-6">
         <h1 className="text-3xl font-bold mb-2">Daftar Barang</h1>
+
+        {/* Input Pencarian */}
+        <div className="mb-4">
+          <input type="text" placeholder="Cari barang..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full p-2 border" />
+        </div>
+
         <button onClick={handleTambahBarang} className="bg-green-500 text-white px-4 py-2 rounded mb-4">
           Tambah Barang
         </button>
+
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -73,7 +84,7 @@ const DaftarBarang = () => {
             </tr>
           </thead>
           <tbody>
-            {barangList.map((barang) => (
+            {filteredBarangList.map((barang) => (
               <tr key={barang.id}>
                 <td className="py-2 px-4">{barang.kodeBarang}</td>
                 <td className="py-2 px-4">{barang.nama}</td>
